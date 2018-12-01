@@ -18,20 +18,6 @@ public class Pager extends FragmentPagerAdapter {
     }
 
 //    public View getTabView(int position) {
-//        int tab;
-//        switch (position){
-//            case 0:
-//                tab = R.layout.vehicles_tab;
-//                break;
-//            case 1:
-//                tab = R.layout.service_tab;
-//                break;
-//            case 2:
-//                tab = R.layout.history_tab;
-//                break;
-//            default:
-//                throw new IllegalArgumentException();
-//        }
 //        return LayoutInflater.from(context).inflate(tab, null);
 //    }
 

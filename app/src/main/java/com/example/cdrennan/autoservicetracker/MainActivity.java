@@ -39,5 +39,22 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        });
 //        tabLayout.addOnTabSelectedListener(this);
+        tabLayout.addOnTabSelectedListener(
+                new TabLayout.ViewPagerOnTabSelectedListener(viewPager) {
+                    @Override
+                    public void onTabSelected(TabLayout.Tab tab) {
+                        super.onTabSelected(tab);
+                    }
+
+                    @Override
+                    public void onTabReselected(TabLayout.Tab tab){
+
+                    }
+
+                    @Override
+                    public void onTabUnselected(TabLayout.Tab tab) {
+
+                    }
+                });
     }
 }

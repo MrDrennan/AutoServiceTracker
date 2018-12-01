@@ -5,12 +5,11 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 public class PageFragment extends Fragment {
-    public static final String ARG_PAGE = "ARG_PAGE";
 
-    private int mPage;
+    public static final String ARG_PAGE = "ARG_PAGE";
+    private int tabNum;
 
     public static PageFragment newInstance(int page) {
         Bundle args = new Bundle();
@@ -23,13 +22,27 @@ public class PageFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPage = getArguments().getInt(ARG_PAGE);
+        tabNum = getArguments().getInt(ARG_PAGE);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.tabs_fragment, container, false);
-        return view;
+
+        int fragment;
+        switch (tabNum){
+            case 0:
+                fragment = R.layout.vehicles_tab;
+                break;
+            case 1:
+                fragment = R.layout.service_tab;
+                break;
+            case 2:
+                fragment = R.layout.history_tab;
+                break;
+            default:
+                throw new IllegalArgumentException();
+        }
+        return inflater.inflate(fragment, container, false);
     }
 }
