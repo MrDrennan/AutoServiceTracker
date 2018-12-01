@@ -4,11 +4,12 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.TableLayout;
 
 //http://www.gadgetsaint.com/android/create-viewpager-tabs-android/#.W--RIEgvyUk
 //https://developer.android.com/training/implementing-navigation/lateral#java
 //https://www.simplifiedcoding.net/android-tablayout-example-using-viewpager-fragments/
-public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener {
+public class MainActivity extends AppCompatActivity {
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
@@ -18,39 +19,25 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        tabLayout = findViewById(R.id.tabLayout);
-        tabLayout.addTab(tabLayout.newTab().setText("VEHICLES"));
-        tabLayout.addTab(tabLayout.newTab().setText("SERVICE"));
-        tabLayout.addTab(tabLayout.newTab().setText("HISTORY"));
-
         viewPager = findViewById(R.id.pager);
-
-        Pager adapter = new Pager(getSupportFragmentManager(), tabLayout.getTabCount());
-
+        Pager adapter = new Pager(getSupportFragmentManager(), MainActivity.this);
         viewPager.setAdapter(adapter);
 
-        viewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-            @Override
-            public void onPageSelected(int position) {
-                tabLayout.setScrollPosition(position, 0, true);
-                tabLayout.setSelected(true);
-            }
-        });
-        tabLayout.addOnTabSelectedListener(this);
-    }
+        tabLayout = findViewById(R.id.tabs_fragment);
+        tabLayout.setupWithViewPager(viewPager);
 
-    @Override
-    public void onTabSelected(TabLayout.Tab tab) {
-        viewPager.setCurrentItem(tab.getPosition());
-    }
+//        for (int i = 0; i < tabLayout.getTabCount(); i++) {
+//            TabLayout.Tab tab = tabLayout.getTabAt(i);
+//            tab.setCustomView(adapter.getTabView(i));
+//        }
 
-    @Override
-    public void onTabUnselected(TabLayout.Tab tab) {
-
-    }
-
-    @Override
-    public void onTabReselected(TabLayout.Tab tab) {
-
+//        viewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+//            @Override
+//            public void onPageSelected(int position) {
+//                tabLayout.setScrollPosition(position, 0, true);
+//                tabLayout.setSelected(true);
+//            }
+//        });
+//        tabLayout.addOnTabSelectedListener(this);
     }
 }
