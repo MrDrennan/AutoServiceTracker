@@ -3,4 +3,11 @@
     <string name="vehicles">VEHICLES</string>
     <string name="history">HISTORY</string>
     <string name="service">SERVICE</string>
+    <string name="vehicle_name">Name</string>
+    <string name="vehicle_year">Year</string>
+    <string name="vehicle_make">Make</string>
+    <string name="vehicle_model">Model</string>
+    <string name="vehicle_engine">Engine</string>
+    <string name="vehicle_mileage">Mileage</string>
+    <string name="service_name">Name</string>
 </resources>
