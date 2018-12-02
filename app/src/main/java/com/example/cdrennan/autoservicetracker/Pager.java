@@ -20,16 +20,6 @@ public class Pager extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         return PageFragment.newInstance(position);
-//        switch (position) {
-//            case 0:
-//                return new VehiclesTab();
-//            case 1:
-//                return new ServiceTab();
-//            case 2:
-//                return new HistoryTab();
-//            default:
-//                throw new IllegalArgumentException();
-//        }
     }
 
     @Override
