@@ -10,4 +10,10 @@
     <string name="vehicle_engine">Engine</string>
     <string name="vehicle_mileage">Mileage</string>
     <string name="service_name">Name</string>
+    <string name="miles_left">Miles Left</string>
+    <string name="interval">Interval</string>
+    <string name="miles_months">Miles | Months</string>
+    <string name="description">Description</string>
+    <string name="miles_interval">Miles Interval</string>
+    <string name="months_interval">Months Interval</string>
 </resources>

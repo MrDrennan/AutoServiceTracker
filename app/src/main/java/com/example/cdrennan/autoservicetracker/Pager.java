@@ -28,7 +28,7 @@ public class Pager extends FragmentPagerAdapter {
             case 0:
                 return "VEHICLES";
             case 1:
-                return "SERVICE";
+                return "SERVICES";
             case 2:
                 return "HISTORY";
             default:
