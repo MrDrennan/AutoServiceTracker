@@ -17,10 +17,6 @@ public class Pager extends FragmentPagerAdapter {
         this.context = context;
     }
 
-//    public View getTabView(int position) {
-//        return LayoutInflater.from(context).inflate(tab, null);
-//    }
-
     @Override
     public Fragment getItem(int position) {
         return PageFragment.newInstance(position);
