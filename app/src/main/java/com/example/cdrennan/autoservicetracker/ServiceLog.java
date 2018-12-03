@@ -6,7 +6,7 @@ public class ServiceLog {
     private long serviceId;
     private double cost;
     private long mileageOfService;
-    private long dateOfService;
+    private String dateOfService;
     private String notes;
 
     public long getId() {
@@ -41,11 +41,11 @@ public class ServiceLog {
         this.mileageOfService = mileageOfService;
     }
 
-    public long getDateOfService() {
+    public String getDateOfService() {
         return dateOfService;
     }
 
-    public void setDateOfService(long dateOfService) {
+    public void setDateOfService(String dateOfService) {
         this.dateOfService = dateOfService;
     }
 
