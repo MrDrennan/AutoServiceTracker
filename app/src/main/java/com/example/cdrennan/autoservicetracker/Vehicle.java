@@ -7,8 +7,9 @@ public class Vehicle {
     private long mileage;
     private String make;
     private String model;
-    private String engine;
     private long year;
+    private String engine;
+
 
     public void setId(long id) {
         this.id = id;

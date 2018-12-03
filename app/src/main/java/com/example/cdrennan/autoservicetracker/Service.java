@@ -8,16 +8,19 @@ public class Service {
     private long milesLeft;
     private long monthsLeft;
     private String description;
-    private long monthsInterval;
     private long milesInterval;
-    private long usesMilesInterval;
+    private long monthsInterval;
+    private long usesMonthsInterval; //boolean
 
-    public long getUsesMilesInterval() {
-        return usesMilesInterval;
+    public static final long TRUE = 1;
+    public static final long FALSE = 0;
+
+    public long getUsesMonthsInterval() {
+        return usesMonthsInterval;
     }
 
-    public void setUsesMilesInterval(long usesMilesInterval) {
-        this.usesMilesInterval = usesMilesInterval;
+    public void setUsesMonthsInterval(long usesMonthsInterval) {
+        this.usesMonthsInterval = usesMonthsInterval;
     }
 
     public long getMilesLeft() {
