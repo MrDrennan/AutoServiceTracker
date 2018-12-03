@@ -12,7 +12,7 @@
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintHorizontal_bias="0.0"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="@+id/guideline2" />
+    app:layout_constraintTop_toTopOf="@+id/guidelineHVehicle" />
 
     <android.support.constraint.Guideline
     android:id="@+id/guidelineHVehicle"

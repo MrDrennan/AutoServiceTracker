@@ -1,8 +1,5 @@
 <resources>
     <string name="app_name">AutoServiceTracker</string>
-    <string name="vehicles">VEHICLES</string>
-    <string name="history">HISTORY</string>
-    <string name="service">SERVICE</string>
     <string name="vehicle_name">Name</string>
     <string name="vehicle_year">Year</string>
     <string name="vehicle_make">Make</string>
@@ -16,4 +13,9 @@
     <string name="description">Description</string>
     <string name="miles_interval">Miles Interval</string>
     <string name="months_interval">Months Interval</string>
+    <string name="service">Service</string>
+    <string name="date_of_service">Date of Service</string>
+    <string name="cost">Cost</string>
+    <string name="mileage_of_service">Mileage of Service</string>
+    <string name="notes">Notes</string>
 </resources>
