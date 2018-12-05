@@ -9,6 +9,19 @@ public class ServiceLog {
     private String dateOfService;
     private String notes;
 
+    public ServiceLog(long id, long serviceId, double cost, long mileageOfService,
+                      String dateOfService, String notes) {
+        this.id = id;
+        this.serviceId = serviceId;
+        this.cost = cost;
+        this.mileageOfService = mileageOfService;
+        this.dateOfService = dateOfService;
+        this.notes = notes;
+    }
+
+    public ServiceLog() {
+    }
+
     public long getId() {
         return id;
     }

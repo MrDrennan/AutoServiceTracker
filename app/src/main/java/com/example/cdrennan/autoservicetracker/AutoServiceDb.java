@@ -1,12 +1,12 @@
 package com.example.cdrennan.autoservicetracker;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
 
 public class AutoServiceDb {
@@ -43,7 +43,7 @@ public class AutoServiceDb {
     public static final String SERVICE_TABLE = "service";
 
     public static final String SERVICE_ID = "_id";
-    public static final int SERVICE_ = 0;
+    public static final int SERVICE_ID_COL = 0;
 
     public static final String SERVICE_VEHICLE_ID = "service_id";
     public static final int SERVICE_VEHICLE_ID_COL = 1;
@@ -194,96 +194,178 @@ public class AutoServiceDb {
 
     // public methods
     public ArrayList<Vehicle> getVehicles() {
-        ArrayList<Vehicle> lists = new ArrayList<Vehicle>();
+        ArrayList<Vehicle> vehicles = new ArrayList<Vehicle>();
         openReadableDB();
         Cursor cursor = db.query(VEHICLE_TABLE,
                 null, null, null, null, null, null);
         while (cursor.moveToNext()) {
             Vehicle vehicle = new Vehicle();
-            vehicle.setId(cursor.getInt(VEHICLE_ID_COL));
+            vehicle.setId(cursor.getLong(VEHICLE_ID_COL));
             vehicle.setName(cursor.getString(VEHICLE_NAME_COL));
-            //vehicle.setMileage(cursor.get);
+            vehicle.setMileage(cursor.getLong(VEHICLE_MILEAGE_COL));
+            vehicle.setMake(cursor.getString(VEHICLE_MAKE_COL));
+            vehicle.setModel(cursor.getString(VEHICLE_MODEL_COL));
+            vehicle.setYear(cursor.getLong(VEHICLE_YEAR_COL));
+            vehicle.setEngine(cursor.getString(VEHICLE_ENGINE_COL));
 
-            lists.add(vehicle);
+            vehicles.add(vehicle);
         }
 
         if (cursor != null)
             cursor.close();
         closeDB();
 
-        return lists;
+        return vehicles;
     }
-    /*
-    public List getList(String name) {
-        String where = LIST_NAME + "= ?";
+
+    public Vehicle getVehicle(String name) {
+        String where = VEHICLE_NAME + "= ?";
         String[] whereArgs = { name };
 
         openReadableDB();
-        Cursor cursor = db.query(LIST_TABLE, null,
+        Cursor cursor = db.query(VEHICLE_TABLE, null,
                 where, whereArgs, null, null, null);
-        List list = null;
+        Vehicle vehicle = null;
         cursor.moveToFirst();
-        list = new List(cursor.getInt(LIST_ID_COL),
-                cursor.getString(LIST_NAME_COL));
+        vehicle = new Vehicle(cursor.getLong(VEHICLE_ID_COL),
+                cursor.getString(VEHICLE_NAME_COL));
+        vehicle.setMileage(cursor.getLong(VEHICLE_MILEAGE_COL));
+        vehicle.setMake(cursor.getString(VEHICLE_MAKE_COL));
+        vehicle.setModel(cursor.getString(VEHICLE_MODEL_COL));
+        vehicle.setYear(cursor.getLong(VEHICLE_YEAR_COL));
+        vehicle.setEngine(cursor.getString(VEHICLE_ENGINE_COL));
+
         if (cursor != null)
             cursor.close();
         this.closeDB();
 
-        return list;
+        return vehicle;
     }
 
-    public ArrayList<Task> getTasks(String listName) {
+    public ArrayList<Service> getServices(String vehicleName) {
         String where =
-                TASK_LIST_ID + "= ? AND " +
-                        TASK_HIDDEN + "!='1'";
-        int listID = getList(listName).getId();
-        String[] whereArgs = { Integer.toString(listID) };
+                SERVICE_VEHICLE_ID + "= ?";
+        long vehicleId = getVehicle(vehicleName).getId();
+        String[] whereArgs = { Long.toString(vehicleId) };
 
         this.openReadableDB();
-        Cursor cursor = db.query(TASK_TABLE, null,
+        Cursor cursor = db.query(SERVICE_TABLE, null,
                 where, whereArgs,
                 null, null, null);
-        ArrayList<Task> tasks = new ArrayList<Task>();
+        ArrayList<Service> services = new ArrayList<Service>();
         while (cursor.moveToNext()) {
-            tasks.add(getTaskFromCursor(cursor));
+            services.add(getServiceFromCursor(cursor));
         }
         if (cursor != null)
             cursor.close();
         this.closeDB();
 
-        return tasks;
+        return services;
     }
 
-    public Task getTask(int id) {
-        String where = TASK_ID + "= ?";
-        String[] whereArgs = { Integer.toString(id) };
+    public ServiceLog getServiceLog(long id) {
+        String where = SERVICE_LOG_ID + "= ?";
+        String[] whereArgs = { Long.toString(id) };
 
         this.openReadableDB();
-        Cursor cursor = db.query(TASK_TABLE,
+        Cursor cursor = db.query(SERVICE_LOG_TABLE,
                 null, where, whereArgs, null, null, null);
         cursor.moveToFirst();
-        Task task = getTaskFromCursor(cursor);
+
+        ServiceLog serviceLog = new ServiceLog(
+                cursor.getLong(SERVICE_LOG_ID_COL),
+                cursor.getLong(SERVICE_LOG_SERVICE_ID_COL),
+                cursor.getDouble(SERVICE_LOG_COST_COL),
+                cursor.getLong(SERVICE_LOG_MILEAGE_OF_SERVICE_COL),
+                cursor.getString(SERVICE_LOG_DATE_OF_SERVICE_COL),
+                cursor.getString(SERVICE_LOG_NOTES_COL));
+
         if (cursor != null)
             cursor.close();
         this.closeDB();
 
-        return task;
+        return serviceLog;
     }
 
-    private static Task getTaskFromCursor(Cursor cursor) {
+    public ArrayList<ServiceLog> getServiceLogs(String serviceName) {
+        String where =
+                SERVICE_LOG_SERVICE_ID + "= ?";
+        long serviceId = getService(serviceName).getId();
+        String[] whereArgs = { Long.toString(serviceId) };
+
+        this.openReadableDB();
+        Cursor cursor = db.query(SERVICE_TABLE, null,
+                where, whereArgs,
+                null, null, null);
+
+        ArrayList<ServiceLog> serviceLogs = new ArrayList<ServiceLog>();
+        while (cursor.moveToNext()) {
+            ServiceLog serviceLog = new ServiceLog(
+                    cursor.getLong(SERVICE_LOG_ID_COL),
+                    cursor.getLong(SERVICE_LOG_SERVICE_ID_COL),
+                    cursor.getDouble(SERVICE_LOG_COST_COL),
+                    cursor.getLong(SERVICE_LOG_MILEAGE_OF_SERVICE_COL),
+                    cursor.getString(SERVICE_LOG_DATE_OF_SERVICE_COL),
+                    cursor.getString(SERVICE_LOG_NOTES_COL));
+
+            serviceLogs.add(serviceLog);
+        }
+        if (cursor != null)
+            cursor.close();
+        this.closeDB();
+
+        return serviceLogs;
+    }
+
+    public Service getService(String serviceName) {
+        String where = SERVICE_NAME + "= ?";
+        String[] whereArgs = { serviceName };
+
+        this.openReadableDB();
+        Cursor cursor = db.query(SERVICE_TABLE,
+                null, where, whereArgs, null, null, null);
+        cursor.moveToFirst();
+        Service service = getServiceFromCursor(cursor);
+        if (cursor != null)
+            cursor.close();
+        this.closeDB();
+
+        return service;
+    }
+
+    public Service getService(long id) {
+        String where = SERVICE_ID + "= ?";
+        String[] whereArgs = { Long.toString(id) };
+
+        this.openReadableDB();
+        Cursor cursor = db.query(SERVICE_TABLE,
+                null, where, whereArgs, null, null, null);
+        cursor.moveToFirst();
+        Service service = getServiceFromCursor(cursor);
+        if (cursor != null)
+            cursor.close();
+        this.closeDB();
+
+        return service;
+    }
+
+    private static Service getServiceFromCursor(Cursor cursor) {
         if (cursor == null || cursor.getCount() == 0){
             return null;
         }
         else {
             try {
-                Task task = new Task(
-                        cursor.getInt(TASK_ID_COL),
-                        cursor.getInt(TASK_LIST_ID_COL),
-                        cursor.getString(TASK_NAME_COL),
-                        cursor.getString(TASK_NOTES_COL),
-                        cursor.getString(TASK_COMPLETED_COL),
-                        cursor.getString(TASK_HIDDEN_COL));
-                return task;
+                Service service = new Service(
+                        cursor.getLong(SERVICE_ID_COL),
+                        cursor.getLong(SERVICE_VEHICLE_ID_COL),
+                        cursor.getString(SERVICE_NAME_COL),
+                        cursor.getLong(SERVICE_MILES_LEFT_COL),
+                        cursor.getLong(SERVICE_MONTHS_LEFT_COL),
+                        cursor.getString(SERVICE_DESCRIPTION_COL),
+                        cursor.getLong(SERVICE_MILES_INTERVAL_COL),
+                        cursor.getLong(SERVICE_MONTHS_INTERVAL_COL),
+                        cursor.getLong(SERVICE_USES_MONTHS_INTERVAL_COL));
+                return service;
             }
             catch(Exception e) {
                 return null;
@@ -291,48 +373,143 @@ public class AutoServiceDb {
         }
     }
 
-    public long insertTask(Task task) {
+    public long insertVehicle(Vehicle vehicle) {
         ContentValues cv = new ContentValues();
-        cv.put(TASK_LIST_ID, task.getListId());
-        cv.put(TASK_NAME, task.getName());
-        cv.put(TASK_NOTES, task.getNotes());
-        cv.put(TASK_COMPLETED, task.getCompletedDate());
-        cv.put(TASK_HIDDEN, task.getHidden());
+        cv.put(VEHICLE_NAME, vehicle.getName());
+        cv.put(VEHICLE_MILEAGE, vehicle.getMileage());
+        cv.put(VEHICLE_MAKE, vehicle.getMake());
+        cv.put(VEHICLE_MODEL, vehicle.getModel());
+        cv.put(VEHICLE_YEAR, vehicle.getYear());
+        cv.put(VEHICLE_ENGINE, vehicle.getEngine());
 
         this.openWriteableDB();
-        long rowID = db.insert(TASK_TABLE, null, cv);
+        long rowID = db.insert(VEHICLE_TABLE, null, cv);
         this.closeDB();
 
         return rowID;
     }
 
-    public int updateTask(Task task) {
+    public long insertService(Service service) {
         ContentValues cv = new ContentValues();
-        cv.put(TASK_LIST_ID, task.getListId());
-        cv.put(TASK_NAME, task.getName());
-        cv.put(TASK_NOTES, task.getNotes());
-        cv.put(TASK_COMPLETED, task.getCompletedDate());
-        cv.put(TASK_HIDDEN, task.getHidden());
-
-        String where = TASK_ID + "= ?";
-        String[] whereArgs = { String.valueOf(task.getId()) };
+        cv.put(SERVICE_VEHICLE_ID, service.getVehicleId());
+        cv.put(SERVICE_NAME, service.getName());
+        cv.put(SERVICE_MILES_LEFT, service.getMilesLeft());
+        cv.put(SERVICE_MONTHS_LEFT, service.getMonthsLeft());
+        cv.put(SERVICE_DESCRIPIION, service.getDescription());
+        cv.put(SERVICE_MILES_INTERVAL, service.getMilesInterval());
+        cv.put(SERVICE_MONTHS_INTERVAL, service.getMonthsInterval());
+        cv.put(SERVICE_USES_MONTHS_INTERVAL, service.getUsesMonthsInterval());
 
         this.openWriteableDB();
-        int rowCount = db.update(TASK_TABLE, cv, where, whereArgs);
+        long rowID = db.insert(SERVICE_TABLE, null, cv);
+        this.closeDB();
+
+        return rowID;
+    }
+
+    public long insertServiceLog(ServiceLog serviceLog) {
+        ContentValues cv = new ContentValues();
+        cv.put(SERVICE_LOG_SERVICE_ID, serviceLog.getServiceId());
+        cv.put(SERVICE_LOG_COST, serviceLog.getCost());
+        cv.put(SERVICE_LOG_MILEAGE_OF_SERVICE, serviceLog.getMileageOfService());
+        cv.put(SERVICE_LOG_DATE_OF_SERVICE, serviceLog.getDateOfService());
+        cv.put(SERVICE_LOG_NOTES, serviceLog.getNotes());
+
+        this.openWriteableDB();
+        long rowID = db.insert(SERVICE_LOG_TABLE, null, cv);
+        this.closeDB();
+
+        return rowID;
+    }
+
+    public int updateVehicle(Vehicle vehicle) {
+        ContentValues cv = new ContentValues();
+        cv.put(VEHICLE_NAME, vehicle.getName());
+        cv.put(VEHICLE_MILEAGE, vehicle.getMileage());
+        cv.put(VEHICLE_MAKE, vehicle.getMake());
+        cv.put(VEHICLE_MODEL, vehicle.getModel());
+        cv.put(VEHICLE_YEAR, vehicle.getYear());
+        cv.put(VEHICLE_ENGINE, vehicle.getEngine());
+
+        String where = VEHICLE_ID + "= ?";
+        String[] whereArgs = { String.valueOf(vehicle.getId()) };
+
+        this.openWriteableDB();
+        int rowCount = db.update(VEHICLE_TABLE, cv, where, whereArgs);
         this.closeDB();
 
         return rowCount;
     }
 
-    public int deleteTask(long id) {
-        String where = TASK_ID + "= ?";
+    public int updateService(Service service) {
+        ContentValues cv = new ContentValues();
+        cv.put(SERVICE_VEHICLE_ID, service.getVehicleId());
+        cv.put(SERVICE_NAME, service.getName());
+        cv.put(SERVICE_MILES_LEFT, service.getMilesLeft());
+        cv.put(SERVICE_MONTHS_LEFT, service.getMonthsLeft());
+        cv.put(SERVICE_DESCRIPIION, service.getDescription());
+        cv.put(SERVICE_MILES_INTERVAL, service.getMilesInterval());
+        cv.put(SERVICE_MONTHS_INTERVAL, service.getMonthsInterval());
+        cv.put(SERVICE_USES_MONTHS_INTERVAL, service.getUsesMonthsInterval());
+
+        String where = SERVICE_ID + "= ?";
+        String[] whereArgs = { String.valueOf(service.getId()) };
+
+        this.openWriteableDB();
+        int rowCount = db.update(SERVICE_TABLE, cv, where, whereArgs);
+        this.closeDB();
+
+        return rowCount;
+    }
+
+    public int updateServiceLog(ServiceLog serviceLog) {
+        ContentValues cv = new ContentValues();
+        cv.put(SERVICE_LOG_SERVICE_ID, serviceLog.getServiceId());
+        cv.put(SERVICE_LOG_COST, serviceLog.getCost());
+        cv.put(SERVICE_LOG_MILEAGE_OF_SERVICE, serviceLog.getMileageOfService());
+        cv.put(SERVICE_LOG_DATE_OF_SERVICE, serviceLog.getDateOfService());
+        cv.put(SERVICE_LOG_NOTES, serviceLog.getNotes());
+
+        String where = SERVICE_LOG_ID + "= ?";
+        String[] whereArgs = { String.valueOf(serviceLog.getId()) };
+
+        this.openWriteableDB();
+        int rowCount = db.update(SERVICE_LOG_TABLE, cv, where, whereArgs);
+        this.closeDB();
+
+        return rowCount;
+    }
+
+    public int deleteVehicle(long id) {
+        String where = VEHICLE_ID + "= ?";
         String[] whereArgs = { String.valueOf(id) };
 
         this.openWriteableDB();
-        int rowCount = db.delete(TASK_TABLE, where, whereArgs);
+        int rowCount = db.delete(VEHICLE_TABLE, where, whereArgs);
         this.closeDB();
 
         return rowCount;
     }
-    */
+
+    public int deleteService(long id) {
+        String where = SERVICE_ID + "= ?";
+        String[] whereArgs = { String.valueOf(id) };
+
+        this.openWriteableDB();
+        int rowCount = db.delete(SERVICE_TABLE, where, whereArgs);
+        this.closeDB();
+
+        return rowCount;
+    }
+
+    public int deleteServiceLog(long id) {
+        String where = SERVICE_LOG_ID + "= ?";
+        String[] whereArgs = { String.valueOf(id) };
+
+        this.openWriteableDB();
+        int rowCount = db.delete(SERVICE_LOG_TABLE, where, whereArgs);
+        this.closeDB();
+
+        return rowCount;
+    }
 }

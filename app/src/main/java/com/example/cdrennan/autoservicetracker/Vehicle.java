@@ -10,6 +10,22 @@ public class Vehicle {
     private long year;
     private String engine;
 
+    public Vehicle() {
+    }
+
+    public Vehicle(long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public Vehicle(long id, String name, long mileage, String make, String model, long year, String engine) {
+        this(id, name);
+        this.mileage = mileage;
+        this.make = make;
+        this.model = model;
+        this.year = year;
+        this.engine = engine;
+    }
 
     public void setId(long id) {
         this.id = id;

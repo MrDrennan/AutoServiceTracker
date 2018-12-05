@@ -15,6 +15,23 @@ public class Service {
     public static final long TRUE = 1;
     public static final long FALSE = 0;
 
+    public Service() {
+    }
+
+    public Service(long id, long vehicleId, String name, long milesLeft, long monthsLeft,
+                   String description, long milesInterval, long monthsInterval,
+                   long usesMonthsInterval) {
+        this.id = id;
+        this.vehicleId = vehicleId;
+        this.name = name;
+        this.milesLeft = milesLeft;
+        this.monthsLeft = monthsLeft;
+        this.description = description;
+        this.milesInterval = milesInterval;
+        this.monthsInterval = monthsInterval;
+        this.usesMonthsInterval = usesMonthsInterval;
+    }
+
     public long getUsesMonthsInterval() {
         return usesMonthsInterval;
     }
