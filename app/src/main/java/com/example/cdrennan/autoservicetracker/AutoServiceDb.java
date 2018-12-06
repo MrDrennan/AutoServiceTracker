@@ -114,7 +114,7 @@ public class AutoServiceDb {
             SERVICE_USES_MONTHS_INTERVAL + " INTEGER);";
 
     public static final String CREATE_SERVICE_LOG_TABLE =
-            "CREATE TABLE " + SERVICE_TABLE + " (" +
+            "CREATE TABLE " + SERVICE_LOG_TABLE + " (" +
             SERVICE_LOG_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             SERVICE_LOG_SERVICE_ID + " INTEGER NOT NULL, " +
             SERVICE_LOG_COST + " REAL, " +
@@ -146,14 +146,14 @@ public class AutoServiceDb {
             db.execSQL(CREATE_SERVICE_LOG_TABLE);
 
             // insert default lists
-            db.execSQL("INSERT INTO vehicle VALUES (1, 'Car', 100000)");
-            db.execSQL("INSERT INTO vehicle VALUES (2, 'Truck', 200000)");
+            db.execSQL("INSERT INTO vehicle VALUES (1, 'Car', 100000, 'Toyota', 'Camry', 2001, '4-cylinder')");
+            db.execSQL("INSERT INTO vehicle VALUES (2, 'Truck', 200000, 'Ford', 'Ranger', 1989, '6-cylinder')");
 
             // insert sample tasks
             db.execSQL("INSERT INTO service VALUES (1, 1, 'oil change', " +
-                    "3100)");
+                    "3100, 3, 'changes car oil', 5000, 3, 0)");
             db.execSQL("INSERT INTO service VALUES (2, 1, 'replace fuel filter', " +
-                    "'1200')");
+                    "1200, 2, '', 2000, 6, 1)");
         }
 
         @Override
@@ -216,6 +216,30 @@ public class AutoServiceDb {
         closeDB();
 
         return vehicles;
+    }
+
+    public Vehicle getVehicle(long id) {
+        String where = VEHICLE_ID + "= ?";
+        String[] whereArgs = { Long.toString(id) };
+
+        openReadableDB();
+        Cursor cursor = db.query(VEHICLE_TABLE, null,
+                where, whereArgs, null, null, null);
+        Vehicle vehicle = null;
+        cursor.moveToFirst();
+        vehicle = new Vehicle(cursor.getLong(VEHICLE_ID_COL),
+                cursor.getString(VEHICLE_NAME_COL));
+        vehicle.setMileage(cursor.getLong(VEHICLE_MILEAGE_COL));
+        vehicle.setMake(cursor.getString(VEHICLE_MAKE_COL));
+        vehicle.setModel(cursor.getString(VEHICLE_MODEL_COL));
+        vehicle.setYear(cursor.getLong(VEHICLE_YEAR_COL));
+        vehicle.setEngine(cursor.getString(VEHICLE_ENGINE_COL));
+
+        if (cursor != null)
+            cursor.close();
+        this.closeDB();
+
+        return vehicle;
     }
 
     public Vehicle getVehicle(String name) {
