@@ -56,7 +56,7 @@
         app:layout_constraintGuide_percent=".5" />
 
     <TextView
-        android:id="@+id/textViewMilesLeft"
+        android:id="@+id/textViewRemaining"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
@@ -67,7 +67,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/editTextMilesLeft"
+        android:id="@+id/editTextRemaining"
         android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_marginStart="4dp"
@@ -79,7 +79,7 @@
         android:inputType="number"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guidelineVVehicle"
-        app:layout_constraintTop_toBottomOf="@+id/textViewMilesLeft" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewRemaining" />
 
     <TextView
         android:id="@+id/textViewInterval"
@@ -169,6 +169,6 @@
         android:layout_marginTop="4dp"
         android:text="@string/months_interval"
         app:layout_constraintStart_toStartOf="@+id/editTextMonthsInterval"
-        app:layout_constraintTop_toBottomOf="@+id/editTextMilesLeft" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextRemaining" />
 
 </android.support.constraint.ConstraintLayout>
