@@ -143,7 +143,7 @@
         app:layout_constraintTop_toBottomOf="@+id/editTextMileageOfService" />
 
     <EditText
-        android:id="@+id/editText4"
+        android:id="@+id/editTextNotes"
         android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_marginStart="4dp"

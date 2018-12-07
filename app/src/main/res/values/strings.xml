@@ -18,4 +18,5 @@
     <string name="cost">Cost</string>
     <string name="mileage_of_service">Mileage of Service</string>
     <string name="notes">Notes</string>
+    <string name="days_left">Days Left</string>
 </resources>
