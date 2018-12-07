@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -21,6 +22,7 @@ public class ServiceTab extends Fragment{
     private Switch intervalSwitch;
     private EditText editTextDescription;
     private TextView textViewRemaining;
+    private Service service;
 
     public static ServiceTab newInstance(){
         return new ServiceTab();
@@ -45,8 +47,22 @@ public class ServiceTab extends Fragment{
 
         Context context = getActivity().getApplicationContext();
         AutoServiceDb db = new AutoServiceDb(context);
-        Service service = db.getService(1);
+        service = db.getService(1);
         fillForm(service);
+
+        intervalSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked){
+                    textViewRemaining.setText(getString(R.string.days_left));
+                    editTextRemaining.setText(String.format(Locale.US, "%d", service.getMonthsLeft()));
+                }
+                else{
+                    textViewRemaining.setText(R.string.miles_left);
+                    editTextRemaining.setText(String.format(Locale.US, "%d", service.getMilesLeft()));
+                }
+            }
+        });
 
         return view;
     }
@@ -60,13 +76,6 @@ public class ServiceTab extends Fragment{
         boolean usesMonthsInterval = service.getUsesMonthsInterval() == Service.TRUE;
         intervalSwitch.setChecked(usesMonthsInterval);
 
-        if (usesMonthsInterval){
-            textViewRemaining.setText("Months Left");
-            editTextRemaining.setText(String.format(Locale.US, "%d", service.getMonthsLeft()));
-        }
-        else{
-            textViewRemaining.setText("Miles Left");
-            editTextRemaining.setText(String.format(Locale.US, "%d", service.getMilesLeft()));
-        }
+
     }
 }
