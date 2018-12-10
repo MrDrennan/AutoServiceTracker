@@ -3,6 +3,9 @@ package com.example.cdrennan.autoservicetracker;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +14,7 @@ import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 public class ServiceTab extends Fragment{
@@ -23,6 +27,10 @@ public class ServiceTab extends Fragment{
     private EditText editTextDescription;
     private TextView textViewRemaining;
     private Service service;
+    private ArrayList<Service> services;
+    private RecyclerView sRecyclerView;
+    private RecyclerView.LayoutManager sLayoutManager;
+    private RecyclerView.Adapter RecyclerAdapter;
 
     public static ServiceTab newInstance(){
         return new ServiceTab();
@@ -49,6 +57,40 @@ public class ServiceTab extends Fragment{
         AutoServiceDb db = new AutoServiceDb(context);
         service = db.getService(1);
         fillForm(service);
+
+        services = db.getServices("Car");
+        String[] historyInfo = new String[services.size()];
+        int i = 0;
+        for(Service currService : services){
+            historyInfo[i] = currService.getName() + " " + currService.getMilesLeft() + " miles left";
+        }
+
+        sRecyclerView = view.findViewById(R.id.recyclerViewService);
+        sRecyclerView.setHasFixedSize(true);
+
+        sLayoutManager = new LinearLayoutManager(getActivity());
+        sRecyclerView.setLayoutManager(sLayoutManager);
+
+        RecyclerAdapter = new RecyclerAdapter(historyInfo);
+        sRecyclerView.setAdapter(RecyclerAdapter);
+
+        DividerItemDecoration itemDecor = new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
+        itemDecor.setDrawable(getContext().getResources().getDrawable(R.drawable.list_divider));
+        sRecyclerView.addItemDecoration(itemDecor);
+
+        sRecyclerView.addOnItemTouchListener(
+                new RecyclerTouchListener(context, sRecyclerView, new RecyclerTouchListener.ClickListener() {
+                    @Override
+                    public void onClick(View view, int position) {
+                        fillForm(services.get(position));
+                    }
+
+                    @Override
+                    public void onLongClick(View view, int position) {
+
+                    }
+                })
+        );
 
         intervalSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override

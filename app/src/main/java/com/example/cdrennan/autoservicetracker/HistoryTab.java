@@ -3,11 +3,15 @@ package com.example.cdrennan.autoservicetracker;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 public class HistoryTab extends Fragment{
@@ -17,6 +21,10 @@ public class HistoryTab extends Fragment{
     private EditText editTextDateOfService;
     private EditText editTextNotes;
     private ServiceLog serviceLog;
+    private ArrayList<ServiceLog> serviceLogs;
+    private RecyclerView hRecyclerView;
+    private RecyclerView.LayoutManager hLayoutManager;
+    private RecyclerView.Adapter recyclerAdapter;
 
     public static HistoryTab newInstance(){
         return new HistoryTab();
@@ -43,6 +51,41 @@ public class HistoryTab extends Fragment{
         db.insertServiceLog(serviceLog);
         ServiceLog serviceLog2 = db.getServiceLog(1);
         fillForm(serviceLog2);
+
+        serviceLogs = db.getServiceLogs("oil change");
+        String[] serviceLogInfo = new String[serviceLogs.size()];
+        int i = 0;
+        for(ServiceLog serviceLog : serviceLogs){
+            serviceLogInfo[i] = serviceLog.getDateOfService() + " $" + serviceLog.getCost();
+            i++;
+        }
+
+        hRecyclerView = view.findViewById(R.id.recyclerViewHistory);
+        hRecyclerView.setHasFixedSize(true);
+
+        hLayoutManager = new LinearLayoutManager(getActivity());
+        hRecyclerView.setLayoutManager(hLayoutManager);
+
+        recyclerAdapter = new RecyclerAdapter(serviceLogInfo);
+        hRecyclerView.setAdapter(recyclerAdapter);
+
+        DividerItemDecoration itemDecor = new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
+        itemDecor.setDrawable(getContext().getResources().getDrawable(R.drawable.list_divider));
+        hRecyclerView.addItemDecoration(itemDecor);
+
+        hRecyclerView.addOnItemTouchListener(
+                new RecyclerTouchListener(context, hRecyclerView, new RecyclerTouchListener.ClickListener() {
+                    @Override
+                    public void onClick(View view, int position) {
+                        fillForm(serviceLogs.get(position));
+                    }
+
+                    @Override
+                    public void onLongClick(View view, int position) {
+
+                    }
+                })
+        );
 
         return view;
     }

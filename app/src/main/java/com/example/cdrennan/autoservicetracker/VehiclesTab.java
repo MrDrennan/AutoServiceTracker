@@ -24,7 +24,8 @@ public class VehiclesTab extends Fragment{
     private EditText editTextEngine;
     private RecyclerView vRecyclerView;
     private RecyclerView.LayoutManager vLayoutManager;
-    private RecyclerView.Adapter RecyclerAdapter;
+    private RecyclerView.Adapter recyclerAdapter;
+    private ArrayList<Vehicle> vehicles;
 
     public static VehiclesTab newInstance(){
         return new VehiclesTab();
@@ -45,13 +46,11 @@ public class VehiclesTab extends Fragment{
         editTextModel = view.findViewById(R.id.editTextModel);
         editTextYear = view.findViewById(R.id.editTextYear);
         editTextEngine = view.findViewById(R.id.editTextEngine);
-        
-
-        
 
         Context context = getActivity().getApplicationContext();
         AutoServiceDb db = new AutoServiceDb(context);
-        ArrayList<Vehicle> vehicles = db.getVehicles();
+
+        vehicles = db.getVehicles();
         String[] info = new String[vehicles.size()];
         int i = 0;
         for (Vehicle currVehicle: vehicles) {
@@ -68,11 +67,26 @@ public class VehiclesTab extends Fragment{
         vLayoutManager = new LinearLayoutManager(getActivity());
         vRecyclerView.setLayoutManager(vLayoutManager);
 
-        //vLayoutManagerDividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
-          //      vRecyclerView.getContext(), vLayoutManager.getOrientation())
+        recyclerAdapter = new RecyclerAdapter(info);
+        vRecyclerView.setAdapter(recyclerAdapter);
 
-        RecyclerAdapter = new RecyclerAdapter(info);
-        vRecyclerView.setAdapter(RecyclerAdapter);
+        DividerItemDecoration itemDecor = new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
+        itemDecor.setDrawable(getContext().getResources().getDrawable(R.drawable.list_divider));
+        vRecyclerView.addItemDecoration(itemDecor);
+
+        vRecyclerView.addOnItemTouchListener(
+                new RecyclerTouchListener(context, vRecyclerView, new RecyclerTouchListener.ClickListener() {
+                    @Override
+                    public void onClick(View view, int position) {
+                        fillForm(vehicles.get(position));
+                    }
+
+                    @Override
+                    public void onLongClick(View view, int position) {
+
+                    }
+                })
+        );
 
         fillForm(vehicle);
 
