@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -26,6 +27,8 @@ public class VehiclesTab extends Fragment{
     private RecyclerView.LayoutManager vLayoutManager;
     private RecyclerView.Adapter recyclerAdapter;
     private ArrayList<Vehicle> vehicles;
+    public static final String ARG_VEHICLE_ID = "VEHICLE_ID";
+    private Context context;
 
     public static VehiclesTab newInstance(){
         return new VehiclesTab();
@@ -47,7 +50,7 @@ public class VehiclesTab extends Fragment{
         editTextYear = view.findViewById(R.id.editTextYear);
         editTextEngine = view.findViewById(R.id.editTextEngine);
 
-        Context context = getActivity().getApplicationContext();
+        context = getActivity().getApplicationContext();
         AutoServiceDb db = new AutoServiceDb(context);
 
         vehicles = db.getVehicles();
@@ -78,7 +81,10 @@ public class VehiclesTab extends Fragment{
                 new RecyclerTouchListener(context, vRecyclerView, new RecyclerTouchListener.ClickListener() {
                     @Override
                     public void onClick(View view, int position) {
-                        fillForm(vehicles.get(position));
+                        Vehicle selectedVehicle = vehicles.get(position);
+                        fillForm(selectedVehicle);
+                        Bundle args = new Bundle();
+                        args.putLong(ARG_VEHICLE_ID, selectedVehicle.getId());
                     }
 
                     @Override
@@ -89,7 +95,6 @@ public class VehiclesTab extends Fragment{
         );
 
         fillForm(vehicle);
-
         return view;
     }
 

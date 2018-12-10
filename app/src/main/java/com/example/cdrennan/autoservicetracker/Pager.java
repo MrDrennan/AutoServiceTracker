@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Toast;
 
 public class Pager extends FragmentPagerAdapter {
     private Context context;
