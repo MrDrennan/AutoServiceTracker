@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -29,6 +30,8 @@
         android:layout_marginLeft="4dp"
         android:layout_marginTop="4dp"
         android:text="@string/vehicle_name"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -62,8 +65,8 @@
         android:layout_marginLeft="4dp"
         android:layout_marginTop="4dp"
         android:text="@string/vehicle_year"
-        app:layout_constraintStart_toStartOf="@+id/guidelineVVehicle"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextMake" />
 
     <EditText
         android:id="@+id/editTextYear"
@@ -76,8 +79,8 @@
         android:layout_marginRight="4dp"
         android:ems="10"
         android:inputType="number"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guidelineVVehicle"
+        app:layout_constraintEnd_toStartOf="@+id/guidelineVVehicle"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewYear" />
 
     <TextView
@@ -115,22 +118,23 @@
         android:layout_marginTop="4dp"
         android:text="@string/vehicle_model"
         app:layout_constraintStart_toStartOf="@+id/guidelineVVehicle"
-        app:layout_constraintTop_toBottomOf="@+id/editTextYear" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextMileage" />
 
     <EditText
-    android:id="@+id/editTextModel"
-    android:layout_width="0dp"
-    android:layout_height="40dp"
-    android:layout_marginStart="4dp"
-    android:layout_marginLeft="4dp"
-    android:layout_marginTop="4dp"
-    android:layout_marginEnd="4dp"
-    android:layout_marginRight="4dp"
-    android:ems="10"
-    android:inputType="text"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="@+id/guidelineVVehicle"
-    app:layout_constraintTop_toBottomOf="@+id/textViewModel" />
+        android:id="@+id/editTextModel"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginRight="4dp"
+        android:ems="10"
+        android:inputType="text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/guidelineVVehicle"
+        app:layout_constraintTop_toBottomOf="@+id/textViewModel" />
 
     <TextView
         android:id="@+id/textViewEngine"
@@ -140,23 +144,23 @@
         android:layout_marginLeft="4dp"
         android:layout_marginTop="4dp"
         android:text="@string/vehicle_engine"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextMake" />
+        app:layout_constraintStart_toStartOf="@+id/guidelineVVehicle"
+        app:layout_constraintTop_toBottomOf="@+id/editTextModel" />
 
     <EditText
-    android:id="@+id/editTextEngine"
-    android:layout_width="0dp"
-    android:layout_height="40dp"
-    android:layout_marginStart="4dp"
-    android:layout_marginLeft="4dp"
-    android:layout_marginTop="4dp"
-    android:layout_marginEnd="4dp"
-    android:layout_marginRight="4dp"
-    android:ems="10"
-    android:inputType="textPersonName"
-    app:layout_constraintEnd_toStartOf="@+id/guidelineVVehicle"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/textViewEngine" />
+        android:id="@+id/editTextEngine"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginRight="4dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guidelineVVehicle"
+        app:layout_constraintTop_toBottomOf="@+id/textViewEngine" />
 
     <TextView
         android:id="@+id/textViewMileage"
@@ -167,7 +171,7 @@
         android:layout_marginTop="4dp"
         android:text="@string/vehicle_mileage"
         app:layout_constraintStart_toStartOf="@+id/guidelineVVehicle"
-        app:layout_constraintTop_toBottomOf="@+id/editTextModel" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/editTextMileage"
@@ -181,6 +185,7 @@
         android:ems="10"
         android:inputType="number"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/guidelineVVehicle"
         app:layout_constraintTop_toBottomOf="@+id/textViewMileage" />
 

@@ -316,9 +316,12 @@ public class AutoServiceDb {
     }
 
     public ArrayList<ServiceLog> getServiceLogs(String serviceName) {
+        return getServiceLogs( getService(serviceName).getId() );
+    }
+
+    public ArrayList<ServiceLog> getServiceLogs(long serviceId) {
         String where =
                 SERVICE_LOG_SERVICE_ID + "= ?";
-        long serviceId = getService(serviceName).getId();
         String[] whereArgs = { Long.toString(serviceId) };
 
         this.openReadableDB();

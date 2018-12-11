@@ -10,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -20,11 +22,14 @@ public class HistoryTab extends Fragment{
     private EditText editTextMileageOfService;
     private EditText editTextDateOfService;
     private EditText editTextNotes;
-    private ServiceLog serviceLog;
+
     private ArrayList<ServiceLog> serviceLogs;
     private RecyclerView hRecyclerView;
     private RecyclerView.LayoutManager hLayoutManager;
     private RecyclerView.Adapter recyclerAdapter;
+    private EditText editTextServiceLogName;
+    private View view;
+    private Context context;
 
     public static HistoryTab newInstance(){
         return new HistoryTab();
@@ -37,36 +42,98 @@ public class HistoryTab extends Fragment{
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.history_tab, container, false);
+        view = inflater.inflate(R.layout.history_tab, container, false);
 
         editTextCost = view.findViewById(R.id.editTextCost);
         editTextMileageOfService = view.findViewById(R.id.editTextMileageOfService);
         editTextDateOfService = view.findViewById(R.id.editTextDateOfService);
         editTextNotes = view.findViewById(R.id.editTextNotes);
+        editTextServiceLogName = view.findViewById(R.id.editTextServiceLogName);
 
-        Context context = getActivity().getApplicationContext();
+        context = getActivity().getApplicationContext();
         AutoServiceDb db = new AutoServiceDb(context);
 
-        serviceLog = new ServiceLog(1L, 1L, 50.5, 100005L, "1/12/18", "small oil leak");
-        db.insertServiceLog(serviceLog);
-        ServiceLog serviceLog2 = db.getServiceLog(1);
-        fillForm(serviceLog2);
+        setupRecycler(view, context, new String[0][0]);
 
-        serviceLogs = db.getServiceLogs("oil change");
-        String[] serviceLogInfo = new String[serviceLogs.size()];
-        int i = 0;
-        for(ServiceLog serviceLog : serviceLogs){
-            serviceLogInfo[i] = serviceLog.getDateOfService() + " $" + serviceLog.getCost();
-            i++;
+        return view;
+    }
+
+    private String[][] formatListData(ArrayList<ServiceLog> serviceLogs){
+        String[][] serviceLogInfo = new String[serviceLogs.size()][2];
+        for (int i = 0; i < serviceLogs.size(); i++){
+            serviceLogInfo[i][0] = serviceLogs.get(i).getDateOfService() + "";
+            serviceLogInfo[i][1] = String.format(Locale.US, "$%.2f", serviceLogs.get(i).getCost());
         }
+        return serviceLogInfo;
+    }
 
+    private void fillForm(ServiceLog serviceLog, long serviceId){
+        fillForm(serviceLog);
+        Service service = new AutoServiceDb(getActivity().getApplicationContext()).getService(serviceId);
+        editTextServiceLogName.setText(service.getName());
+    }
+
+    private void fillForm(ServiceLog serviceLog){
+        editTextCost.setText(String.format(Locale.US, "$%.2f", serviceLog.getCost()));
+        editTextMileageOfService.setText(String.format(Locale.US, "%d", serviceLog.getMileageOfService()));
+        editTextDateOfService.setText(serviceLog.getDateOfService());
+        editTextNotes.setText(serviceLog.getNotes());
+    }
+
+    public void clearForm(){
+        editTextCost.setText("");
+        editTextMileageOfService.setText("");
+        editTextDateOfService.setText("");
+        editTextNotes.setText("");
+        editTextServiceLogName.setText("");
+    }
+
+    public void addServiceLog(long serviceId){
+        ServiceLog serviceLog = makeNewService(serviceId);
+        new AutoServiceDb(getActivity().getApplicationContext()).insertServiceLog(serviceLog);
+        serviceLogs.add(serviceLog);
+        //loadRecyclerList(formatListData(serviceLogs));
+        String[][] list = formatListData(serviceLogs);
+        setupRecycler(view, context, list);
+    }
+
+    public ServiceLog makeNewService(long serviceId){
+        return new ServiceLog(0, serviceId,
+                Double.parseDouble(editTextCost.getText().toString()),
+                Long.parseLong(editTextMileageOfService.getText().toString()),
+                editTextDateOfService.getText().toString(),
+                editTextNotes.getText().toString());
+    }
+
+    public void loadData(long serviceId){
+        serviceLogs = new AutoServiceDb(getActivity().getApplicationContext()).getServiceLogs(serviceId);
+        if (serviceLogs != null && serviceLogs.size() > 0){
+            fillForm(serviceLogs.get(0), serviceId);
+            //loadRecyclerList(formatListData(serviceLogs));
+            String[][] list = formatListData(serviceLogs);
+            setupRecycler(view, context, list);
+        }
+        else {
+            clearForm();
+            //loadRecyclerList(new String[0][0]);
+            String[][] list = formatListData(serviceLogs);
+            setupRecycler(view, context, new String[0][0]);
+        }
+    }
+
+    private void loadRecyclerList(String[][] list){
+        recyclerAdapter = new RecyclerAdapter(list);
+        hRecyclerView.swapAdapter(recyclerAdapter, false);
+    }
+
+    private void setupRecycler(View view, Context context, String[][] listData){
         hRecyclerView = view.findViewById(R.id.recyclerViewHistory);
         hRecyclerView.setHasFixedSize(true);
 
         hLayoutManager = new LinearLayoutManager(getActivity());
         hRecyclerView.setLayoutManager(hLayoutManager);
 
-        recyclerAdapter = new RecyclerAdapter(serviceLogInfo);
+        recyclerAdapter = new RecyclerAdapter(listData);
         hRecyclerView.setAdapter(recyclerAdapter);
 
         DividerItemDecoration itemDecor = new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
@@ -86,18 +153,5 @@ public class HistoryTab extends Fragment{
                     }
                 })
         );
-
-        return view;
-    }
-
-    private void fillForm(ServiceLog serviceLog){
-        editTextCost.setText(String.format(Locale.US, "$%.2f", serviceLog.getCost()));
-        editTextMileageOfService.setText(String.format(Locale.US, "%d", serviceLog.getMileageOfService()));
-        editTextDateOfService.setText(serviceLog.getDateOfService());
-        editTextNotes.setText(serviceLog.getNotes());
-    }
-
-    public void loadData(long serviceId){
-
     }
 }

@@ -17,7 +17,6 @@ public class Pager extends FragmentPagerAdapter {
     private HistoryTab historyTab;
     public static final String ARG_VEHICLE_ID = "VEHICLE_ID";
     public static final String ARG_SERVICE_ID = "SERVICE_ID";
-    public static final String[] ID_ARGS = {"VEHICLE_ID", "SERVICE_ID"};
 
     public Pager(FragmentManager fm, Context context) {
         super(fm);

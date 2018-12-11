@@ -32,12 +32,12 @@ public class Service {
         this.usesMonthsInterval = usesMonthsInterval;
     }
 
-    public long getUsesMonthsInterval() {
-        return usesMonthsInterval;
+    public boolean getUsesMonthsInterval() {
+        return usesMonthsInterval == Service.TRUE;
     }
 
-    public void setUsesMonthsInterval(long usesMonthsInterval) {
-        this.usesMonthsInterval = usesMonthsInterval;
+    public void setUsesMonthsInterval(boolean usesMonthsInterval) {
+        this.usesMonthsInterval = usesMonthsInterval ? TRUE: FALSE;
     }
 
     public long getMilesLeft() {

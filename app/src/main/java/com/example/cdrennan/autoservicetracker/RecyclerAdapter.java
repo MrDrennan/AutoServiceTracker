@@ -6,21 +6,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.util.ArrayList;
+import org.w3c.dom.Text;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.RViewHolder> {
-    private String[] rDataset;
+    private String[][] rDataset;
 
     public static class RViewHolder extends RecyclerView.ViewHolder {
-        public TextView rTextView;
+        public TextView rTextViewCol1;
+        public TextView rTextViewCol2;
 
         public RViewHolder(View v){
             super(v);
-            rTextView = v.findViewById(R.id.textViewVehicleInfo);
+            rTextViewCol1 = v.findViewById(R.id.textViewCol1);
+            rTextViewCol2 = v.findViewById(R.id.textViewCol2);
         }
     }
 
-    public RecyclerAdapter(String[] rDataset){
+    public RecyclerAdapter(String[][] rDataset){
         this.rDataset = rDataset;
     }
 
@@ -35,7 +37,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.RViewH
 
     @Override
     public void onBindViewHolder(RViewHolder holder, int position){
-        holder.rTextView.setText(rDataset[position]);
+        holder.rTextViewCol1.setText(rDataset[position][0]);
+        holder.rTextViewCol2.setText(rDataset[position][1]);
     }
 
     @Override
