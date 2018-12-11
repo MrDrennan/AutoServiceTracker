@@ -267,9 +267,13 @@ public class AutoServiceDb {
     }
 
     public ArrayList<Service> getServices(String vehicleName) {
+        long vehicleId = getVehicle(vehicleName).getId();
+        return getServices(vehicleId);
+    }
+
+    public ArrayList<Service> getServices(long vehicleId) {
         String where =
                 SERVICE_VEHICLE_ID + "= ?";
-        long vehicleId = getVehicle(vehicleName).getId();
         String[] whereArgs = { Long.toString(vehicleId) };
 
         this.openReadableDB();

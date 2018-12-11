@@ -85,6 +85,7 @@ public class VehiclesTab extends Fragment{
                         fillForm(selectedVehicle);
                         Bundle args = new Bundle();
                         args.putLong(ARG_VEHICLE_ID, selectedVehicle.getId());
+                        setArguments(args);
                     }
 
                     @Override

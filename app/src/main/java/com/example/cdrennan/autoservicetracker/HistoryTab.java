@@ -96,4 +96,8 @@ public class HistoryTab extends Fragment{
         editTextDateOfService.setText(serviceLog.getDateOfService());
         editTextNotes.setText(serviceLog.getNotes());
     }
+
+    public void loadData(long serviceId){
+
+    }
 }

@@ -13,6 +13,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -30,7 +31,9 @@ public class ServiceTab extends Fragment{
     private ArrayList<Service> services;
     private RecyclerView sRecyclerView;
     private RecyclerView.LayoutManager sLayoutManager;
-    private RecyclerView.Adapter RecyclerAdapter;
+    private RecyclerView.Adapter recyclerAdapter;
+    private View view;
+    private Context context;
 
     public static ServiceTab newInstance(){
         return new ServiceTab();
@@ -43,7 +46,7 @@ public class ServiceTab extends Fragment{
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.service_tab, container, false);
+        view = inflater.inflate(R.layout.service_tab, container, false);
 
         editTextServiceName = view.findViewById(R.id.editTextServiceName);
         editTextRemaining = view.findViewById(R.id.editTextRemaining);
@@ -53,44 +56,15 @@ public class ServiceTab extends Fragment{
         intervalSwitch = view.findViewById(R.id.switch1);
         textViewRemaining = view.findViewById(R.id.textViewRemaining);
 
-        Context context = getActivity().getApplicationContext();
+        context = getActivity().getApplicationContext();
         AutoServiceDb db = new AutoServiceDb(context);
         service = db.getService(1);
         fillForm(service);
 
         services = db.getServices("Car");
-        String[] historyInfo = new String[services.size()];
-        int i = 0;
-        for(Service currService : services){
-            historyInfo[i] = currService.getName() + " " + currService.getMilesLeft() + " miles left";
-        }
 
-        sRecyclerView = view.findViewById(R.id.recyclerViewService);
-        sRecyclerView.setHasFixedSize(true);
-
-        sLayoutManager = new LinearLayoutManager(getActivity());
-        sRecyclerView.setLayoutManager(sLayoutManager);
-
-        RecyclerAdapter = new RecyclerAdapter(historyInfo);
-        sRecyclerView.setAdapter(RecyclerAdapter);
-
-        DividerItemDecoration itemDecor = new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
-        itemDecor.setDrawable(getContext().getResources().getDrawable(R.drawable.list_divider));
-        sRecyclerView.addItemDecoration(itemDecor);
-
-        sRecyclerView.addOnItemTouchListener(
-                new RecyclerTouchListener(context, sRecyclerView, new RecyclerTouchListener.ClickListener() {
-                    @Override
-                    public void onClick(View view, int position) {
-                        fillForm(services.get(position));
-                    }
-
-                    @Override
-                    public void onLongClick(View view, int position) {
-
-                    }
-                })
-        );
+        String[] serviceInfo = formatListData(services);
+        setupRecycler(serviceInfo);
 
         intervalSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -119,5 +93,71 @@ public class ServiceTab extends Fragment{
         intervalSwitch.setChecked(usesMonthsInterval);
 
 
+    }
+
+    private void clearForm(){
+        editTextServiceName.setText("");
+        editTextMilesInterval.setText("");
+        editTextMonthsInterval.setText("");
+        editTextDescription.setText("");
+        boolean usesMonthsInterval = false;
+        intervalSwitch.setChecked(usesMonthsInterval);
+    }
+
+    public void loadData(long vehicleId) {
+        services = new AutoServiceDb(getActivity().getApplicationContext()).getServices(vehicleId);
+        if (services != null && services.size() > 0){
+            fillForm(services.get(0));
+            loadRecyclerList(formatListData(services));
+        }
+        else{
+            clearForm();
+            loadRecyclerList(new String[0]);
+        }
+        Toast.makeText(context, "Vehicle Id: " + vehicleId, Toast.LENGTH_SHORT).show();
+
+    }
+
+    private String[] formatListData(ArrayList<Service> services){
+        String[] serviceInfo = new String[services.size()];
+        for (int i = 0; i < services.size(); i++){
+            serviceInfo[i] = services.get(i).getName() + " " + services.get(i).getMilesLeft() + " miles left";
+        }
+        return serviceInfo;
+    }
+
+    private void loadRecyclerList(String[] list){
+        recyclerAdapter = new RecyclerAdapter(list);
+        sRecyclerView.swapAdapter(recyclerAdapter, true);
+    }
+
+    private void setupRecycler(String[] listData){
+
+        sRecyclerView = view.findViewById(R.id.recyclerViewService);
+        sRecyclerView.setHasFixedSize(true);
+
+        sLayoutManager = new LinearLayoutManager(getActivity());
+        sRecyclerView.setLayoutManager(sLayoutManager);
+
+        recyclerAdapter = new RecyclerAdapter(listData);
+        sRecyclerView.setAdapter(recyclerAdapter);
+
+        DividerItemDecoration itemDecor = new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
+        itemDecor.setDrawable(getContext().getResources().getDrawable(R.drawable.list_divider));
+        sRecyclerView.addItemDecoration(itemDecor);
+
+        sRecyclerView.addOnItemTouchListener(
+                new RecyclerTouchListener(context, sRecyclerView, new RecyclerTouchListener.ClickListener() {
+                    @Override
+                    public void onClick(View view, int position) {
+                        fillForm(services.get(position));
+                    }
+
+                    @Override
+                    public void onLongClick(View view, int position) {
+
+                    }
+                })
+        );
     }
 }

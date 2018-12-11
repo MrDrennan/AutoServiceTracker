@@ -11,22 +11,56 @@ import android.widget.Toast;
 
 public class Pager extends FragmentPagerAdapter {
     private Context context;
-    final int TAB_COUNT = 3;
+    private final int TAB_COUNT = 3;
+    private VehiclesTab vehiclesTab;
+    private ServiceTab serviceTab;
+    private HistoryTab historyTab;
+    public static final String ARG_VEHICLE_ID = "VEHICLE_ID";
+    public static final String ARG_SERVICE_ID = "SERVICE_ID";
+    public static final String[] ID_ARGS = {"VEHICLE_ID", "SERVICE_ID"};
 
     public Pager(FragmentManager fm, Context context) {
         super(fm);
         this.context = context;
     }
 
+    public Fragment getFragment(int position){
+        switch(position){
+            case 0:
+                return vehiclesTab;
+            case 1:
+                return serviceTab;
+            case 2:
+                return historyTab;
+            default:
+                throw new IllegalArgumentException();
+        }
+    }
+
+    public VehiclesTab getVehiclesTab(){
+        return vehiclesTab;
+    }
+
+    public ServiceTab getServiceTab(){
+        return serviceTab;
+    }
+
+    public HistoryTab getHistoryTab(){
+        return historyTab;
+    }
+
     @Override
     public Fragment getItem(int position) {
         switch(position){
             case 0:
-                return VehiclesTab.newInstance();
+                vehiclesTab = VehiclesTab.newInstance();
+                return vehiclesTab;
             case 1:
-                return ServiceTab.newInstance();
+                serviceTab = ServiceTab.newInstance();
+                return serviceTab;
             case 2:
-                return  HistoryTab.newInstance();
+                historyTab = HistoryTab.newInstance();
+                return  historyTab;
             default:
                 throw new IllegalArgumentException();
         }
