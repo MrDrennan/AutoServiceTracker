@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
     private long serviceId;
     private boolean isReadyToAdd;
     private int currentTab;
+    private FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onTabUnselected(TabLayout.Tab tab) {
                         int position = tab.getPosition();
+                        getPlusFabIcon();
                         isReadyToAdd = false;
 
                         Fragment fragment = adapter.getFragment(position);
@@ -84,7 +86,6 @@ public class MainActivity extends AppCompatActivity {
 
                         Bundle bundle = fragment.getArguments();
                         if (bundle != null){
-                            long id;
                             switch (position){
                                 case 0:
                                     vehicleId = bundle.getLong(adapter.ARG_VEHICLE_ID);
@@ -97,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-        FloatingActionButton fab = findViewById(R.id.fab);
+        fab = findViewById(R.id.fab);
 
         isReadyToAdd = false;
         fab.setOnClickListener(new View.OnClickListener() {
@@ -108,14 +109,17 @@ public class MainActivity extends AppCompatActivity {
                     switch (currentTab){
                         case 0:
                             adapter.getVehiclesTab().addVehicle();
+                            getPlusFabIcon();
                             isReadyToAdd = false;
                             break;
                         case 1:
                             adapter.getServiceTab().addService(vehicleId);
+                            getPlusFabIcon();
                             isReadyToAdd = false;
                             break;
                         case 2:
                             adapter.getHistoryTab().addServiceLog(serviceId);
+                            getPlusFabIcon();
                             isReadyToAdd = false;
                             break;
                     }
@@ -127,19 +131,30 @@ public class MainActivity extends AppCompatActivity {
                                 return;
                             }
                             adapter.getVehiclesTab().clearForm();
+                            getConfirmFabIcon();
                             isReadyToAdd = true;
                             break;
                         case 1:
                             adapter.getServiceTab().clearForm();
+                            getConfirmFabIcon();
                             isReadyToAdd = true;
                             break;
                         case 2:
                             adapter.getHistoryTab().clearForm();
+                            getConfirmFabIcon();
                             isReadyToAdd = true;
                             break;
                     }
                 }
             }
         });
+    }
+
+    private void getConfirmFabIcon(){
+        fab.setImageResource(R.drawable.ic_confirm_floating_btn);
+    }
+
+    private void getPlusFabIcon(){
+        fab.setImageResource(R.drawable.ic_floating_btn);
     }
 }

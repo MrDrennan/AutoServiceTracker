@@ -70,6 +70,9 @@ public class HistoryTab extends Fragment{
     private void fillForm(ServiceLog serviceLog, long serviceId){
         fillForm(serviceLog);
         Service service = new AutoServiceDb(getActivity().getApplicationContext()).getService(serviceId);
+        if (service == null){
+            return;
+        }
         editTextServiceLogName.setText(service.getName());
     }
 
